@@ -1,0 +1,83 @@
+CREATE DATABASE app;
+\c app;
+
+CREATE TABLE especialidad
+(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE departamento
+(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL
+);
+
+
+CREATE TABLE procedimiento
+(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    id_especialidad INTEGER NOT NULL
+);
+
+ALTER TABLE procedimiento
+    ADD CONSTRAINT fk_procedimiento_especialidad
+    FOREIGN KEY (id_especialidad) REFERENCES especialidad (id);
+
+
+CREATE TABLE especialista
+(
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(255) NOT NULL,
+    id_especialidad INTEGER NOT NULL,
+    horario_inicio TIME NOT NULL,
+    horario_fin TIME NOT NULL
+);
+
+ALTER TABLE especialista
+    ADD CONSTRAINT fk_especialista_especialidad
+    FOREIGN KEY (id_especialidad) REFERENCES especialidad (id);
+
+
+CREATE TABLE consultorio
+(
+    id SERIAL PRIMARY KEY,
+    ubicacion VARCHAR(255) NOT NULL,
+    id_departamento INTEGER NOT NULL
+);
+
+ALTER TABLE consultorio
+    ADD CONSTRAINT fk_consultorio_departamento
+    FOREIGN KEY (id_departamento) REFERENCES departamento (id);
+
+
+CREATE TABLE cita
+(
+    id SERIAL PRIMARY KEY,
+    id_procedimiento INTEGER NOT NULL,
+    id_consultorio INTEGER NOT NULL,
+    fecha_hora_atencion TIMESTAMP NOT NULL,
+    id_especialista INTEGER NOT NULL,
+    nombre_paciente VARCHAR(255) NOT NULL
+);
+
+ALTER TABLE cita
+    ADD CONSTRAINT fk_cita_procedimiento
+    FOREIGN KEY (id_procedimiento) REFERENCES procedimiento (id);
+
+ALTER TABLE cita
+    ADD CONSTRAINT fk_cita_consultorio
+    FOREIGN KEY (id_consultorio) REFERENCES consultorio (id);
+
+ALTER TABLE cita
+    ADD CONSTRAINT fk_cita_especialista
+    FOREIGN KEY (id_especialista) REFERENCES especialista (id);
+
+INSERT INTO especialidad (nombre) VALUES ('Medicina general');
+INSERT INTO departamento (nombre) VALUES ('Urgencias');
+INSERT INTO procedimiento (nombre, id_especialidad) VALUES ('Chequeo periódico', 1);
+INSERT INTO especialista (nombre, id_especialidad, horario_inicio, horario_fin) VALUES ('Juan Parra', 1, '07:30:00', '17:00:00');
+INSERT INTO consultorio (ubicacion, id_departamento) VALUES ('Sala 5', 1);
+INSERT INTO cita (id_procedimiento, id_consultorio, fecha_hora_atencion, id_especialista, nombre_paciente) VALUES (1, 1, '2024-05-27 10:00:00', 1, 'Pepe Pérez');

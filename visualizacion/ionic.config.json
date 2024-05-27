@@ -1,0 +1,7 @@
+{
+  "name": "visualizacion",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
